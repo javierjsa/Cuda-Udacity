@@ -142,15 +142,13 @@ void gaussian_blur(const unsigned char* const inputChannel,
   if (thread_2D_pos.x >= numCols || thread_2D_pos.y >= numRows)
     return;
 
-  float result;
+  float result=0.f;
  
   int r = thread_2D_pos.y;
   int c = thread_2D_pos.x;
 
   for (int filter_r = -filterWidth/2; filter_r <= filterWidth/2; ++filter_r) {
-        for (int filter_c = -filterWidth/2; filter_c <= filterWidth/2; ++filter_c) {
-
-          result = 0.f;  
+        for (int filter_c = -filterWidth/2; filter_c <= filterWidth/2; ++filter_c) {          
           //Find the global image position for this filter position
           //clamp to boundary of the image
           int image_r = min(max(r + filter_r, 0), static_cast<int>(numRows - 1));
@@ -320,6 +318,17 @@ void your_gaussian_blur(const uchar4 * const h_inputImageRGBA, uchar4 * const d_
                    const float* const filter, const int filterWidth)
   */
   gaussian_blur<<<gridSize,blockSize>>>(d_redBlurred, d_redBlurred,numRows, numCols, d_filter,filterWidth);
+  // Again, call cudaDeviceSynchronize(), then call checkCudaErrors() immediately after
+  // launching your kernel to make sure that you didn't make any mistakes.
+  cudaDeviceSynchronize(); checkCudaErrors(cudaGetLastError());  
+
+  gaussian_blur<<<gridSize,blockSize>>>(d_greenBlurred, d_greenBlurred,numRows, numCols, d_filter,filterWidth);
+  // Again, call cudaDeviceSynchronize(), then call checkCudaErrors() immediately after
+  // launching your kernel to make sure that you didn't make any mistakes.
+  cudaDeviceSynchronize(); checkCudaErrors(cudaGetLastError());  
+
+ 
+  gaussian_blur<<<gridSize,blockSize>>>(d_blueBlurred, d_blueBlurred,numRows, numCols, d_filter,filterWidth);
   // Again, call cudaDeviceSynchronize(), then call checkCudaErrors() immediately after
   // launching your kernel to make sure that you didn't make any mistakes.
   cudaDeviceSynchronize(); checkCudaErrors(cudaGetLastError());  
