@@ -295,13 +295,13 @@ void your_gaussian_blur(const uchar4 * const h_inputImageRGBA, uchar4 * const d_
   //std::cout<<"numRows: "<<numRows<<" numCols: "<< numCols;
   
   //Allocate memory
-  /*
+  
   const dim3 blockSize(numCols,1, 1);  //TODO
   const dim3 gridSize( 1, numRows, 1);  //TODO 
-  */
+  
 
-  const dim3 blockSize(block_size,block_size, 1);  //TODO
-  const dim3 gridSize( 1, 32, 1);  //TODO
+  //const dim3 blockSize(block_size,block_size, 1);  //TODO
+  //const dim3 gridSize( block_cols, block_rows, 1);  //TODO
 
   //TODO: Launch a kernel for separating the RGBA image into different color channels
   //rgba_to_greyscale<<<gridSize, blockSize>>>(d_rgbaImage, d_greyImage, numRows, numCols);
